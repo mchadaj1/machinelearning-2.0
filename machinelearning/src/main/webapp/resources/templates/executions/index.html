@@ -1,0 +1,57 @@
+<div>
+
+    <select class="form-control" ng-model="selectedProblem_configuration" ng-options="problem_configuration.name for problem_configuration in problem_configurations">
+        <option value="">Wybierz wariant zadania</option>
+    </select>
+    <br/>
+    <select class="form-control" ng-model="selectedMethod_configuration" ng-options="method_configuration.name for method_configuration in method_configurations">
+        <option value="">Wybierz wariant metody</option>
+    </select>
+    <form class="form-horizontal" ng-submit="compare(selectedExecutions)">
+
+            <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <td></td>
+                    <td>Wariant zadania</td>
+                    <td>Wariant metody</td>
+                    <td>Oczekuje</td>
+                    <td>Zakończono</td>
+                    <td>Wydruk przebiegu</td>
+                    <td>Statystyki</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="execution in executions | filter:{ 'problemConfigurationId' : selectedProblem_configuration.id, 'methodConfigurationId' : selectedMethod_configuration.id } : true">
+                    <td> <input
+                            type="checkbox"
+                            name="selectedExecutions[]"
+                            value="{{execution.id}}"
+                            ng-model="execution.selected"
+                    > {{fruit.name}}
+                        </label></td>
+                    <td>{{execution.problemConfiguration.name}}</td>
+                    <td>{{execution.methodConfiguration.name}}</td>
+                    <td>
+
+                        <i class = "{{execution.pending ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}}"/>
+
+                    </td>
+                    <td><i class = "{{execution.completed ? 'glyphicon glyphicon-ok' : 'glyphicon glyphicon-remove'}}"/></td>
+                    <td>
+                        <a href="http://localhost:9001/files/{{execution.id}}">Pobierz</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-block btn-default btn-sm" ng-click="go('/statistics/'+execution.id)"><i class="glyphicon glyphicon-list"></i></button>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        <button type="submit" class="btn btn-primary">Porównaj</button>
+        <br>
+        </form>
+    <br>
+    <button ng-click="go('/executions/add')"  class="btn btn-primary">Dodaj</button>
+</div>

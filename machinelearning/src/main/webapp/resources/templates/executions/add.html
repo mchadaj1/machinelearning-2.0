@@ -1,0 +1,20 @@
+<div>
+    <h3><a href="#/executions"><i class="glyphicon glyphicon-chevron-left"></i></a>
+        Dodaj nowe wykonanie
+
+    </h3>
+
+
+    <form class="form-horizontal" ng-submit="add()">
+    <select class="form-control" ng-model="execution.problemConfigurationId" ng-options= "problem_configuration.id as problem_configuration.name for problem_configuration in problem_configurations">
+        <option value="">Wybierz konfigurację problemu</option>
+    </select>
+    <br/>
+    <select class="form-control" ng-model="execution.methodConfigurationId" ng-options="method_configuration.id as method_configuration.name for method_configuration in method_configurations">
+        <option value="">Wybierz konfigurację metody</option>
+    </select>
+
+    <br/>
+        <button type="submit" class="btn btn-primary">Dodaj</button>
+    </form>
+</div>

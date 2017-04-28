@@ -1,0 +1,47 @@
+<div>
+<div class="form-group">
+    <h3><a href="#/methodconfiguration"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Edytuj konfigurację wariantu
+
+    </h3>
+
+
+<form class="form-horizontal" ng-submit="edit(configuration.id,configuration)">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="configuration.name" /><br>
+
+
+    <button type="submit" class="btn btn-primary">Edytuj</button>
+
+</form>
+
+<h3>Parametry</h3>
+
+<form class="form-group" >
+
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+            <thead>
+            <tr>
+
+                <td>Nazwa</td>
+                <td>Typ</td>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="method_param in method_params">
+
+                <td>{{method_param.name}}</td>
+                <td>{{method_param.type}}</td>
+                <td><input type="form-group" ng-model = "method_param.value" ng-change="editValue(method_param);"/></td>
+
+
+            </tr>
+
+            </tbody>
+        </table>
+</form>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="form-group">
+    <h3><a href="#/methodconfiguration"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Dodaj nowy wariant metody
+
+    </h3>
+    <label>Metoda</label>
+    <select class="form-control"  ng-model="configuration.method_id" ng-options="method.id as method.name for method in methods">
+
+    </select>
+
+<form class="form-horizontal" ng-submit="add()">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="configuration.name"/>
+    <br>
+
+
+
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+
+</form>
+
+</div>

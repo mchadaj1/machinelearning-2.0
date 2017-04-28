@@ -1,0 +1,258 @@
+package com.example.restControllers;
+
+import com.example.StatisticDTO;
+import com.example.entities.*;
+import com.example.services.AlgorithmExecutionRepository;
+import com.example.services.MethodConfigurationRepository;
+import com.example.services.ProblemConfigurationRepository;
+import com.example.services.StatisticRepository;
+import org.springframework.beans.factory.access.BootstrapException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * Created by mateusz on 13.05.16.
+ */
+@RestController
+@RequestMapping("/services/statistics")
+public class StatisticsRestController {
+
+    @Autowired
+    StatisticRepository statisticRepository;
+
+    @Autowired
+    ProblemConfigurationRepository problemConfigurationRepository;
+
+    @Autowired
+    MethodConfigurationRepository methodConfigurationRepository;
+
+    @Autowired
+    AlgorithmExecutionRepository algorithmExecutionRepository;
+
+    int k = 20;
+
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public ResponseEntity<StatisticDTO> index(@PathVariable Long id){
+
+        StatisticDTO statisticDTO = new StatisticDTO();
+        List<Statistic> statistics = statisticRepository.findByExecutionId(id);
+
+        AlgorithmExecution algorithmExecution = algorithmExecutionRepository.findById(id);
+
+        ProblemConfiguration problemConfiguration = problemConfigurationRepository.findById(algorithmExecution.getProblemConfigurationId());
+        MethodConfiguration methodConfiguration = methodConfigurationRepository.findById(algorithmExecution.getMethodConfigurationId());
+
+        statisticDTO.name = "Konfiguracja problemu: " +problemConfiguration.getName() + " Konfiguracja metody: "+methodConfiguration.getName();
+        List<ProblemParamValue> problemParamValues = problemConfiguration.problemParamValues;
+        int experiments = 0;
+        int simulations = 0;
+        for(ProblemParamValue problemParamValue : problemParamValues) {
+            statisticDTO.insertParam(problemParamValue.problem_param.getName(),problemParamValue.getValue());
+            if(Objects.equals(problemParamValue.problem_param.getName(),"experiments")) {
+                experiments = Integer.parseInt(problemParamValue.getValue());
+            }
+            else if(Objects.equals(problemParamValue.problem_param.getName(),"simulations")) {
+                simulations = Integer.parseInt(problemParamValue.getValue());
+            }
+        }
+        statisticDTO.preysKilled = new ArrayList<>(experiments);
+        for(int i = 0; i < experiments; i++) {
+            statisticDTO.preysKilled.add(new ArrayList<>(simulations));
+            for(int j = 0; j < simulations; j++) {
+                statisticDTO.preysKilled.get(i).add(j,0.0);
+            }
+        }
+        for(Statistic statistic : statistics) {
+            if(Objects.equals(statistic.getEaten_agent_type(),"PREY")) {
+                statisticDTO.preysKilled.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,statisticDTO.preysKilled.get(statistic.getExperiment_number()-1).get(statistic.getSimulation_number()-1)+1);
+            }
+        }
+
+
+        statisticDTO.setExperiments(experiments);
+        statisticDTO.setSimulations(simulations);
+
+        if(simulations > k) {
+            List<List<Double>> averages = new ArrayList<>(experiments+1);
+            List<Double> averageOfAllExperiments = new ArrayList<>(simulations-k);
+            for(int s=0; s < simulations-k; s++) {
+                averageOfAllExperiments.add(0.0);
+            }
+            for(int l = 0; l< experiments; l++) {
+                List<Double> averagesInSimulation = new ArrayList<>(simulations - k);
+                for(int i = k; i < simulations; i++) {
+                    double sum = 0;
+                    for (int j = i - k; j < i; j++) {
+                        sum += statisticDTO.preysKilled.get(l).get(j);
+                    }
+                    averagesInSimulation.add(sum/this.k);
+                    averageOfAllExperiments.set(i-k,averageOfAllExperiments.get(i-k)+sum/this.k);
+                }
+                averages.add(averagesInSimulation);
+            }
+            final int exps = experiments;
+            averageOfAllExperiments.replaceAll(b -> b/exps);
+            averages.add(averageOfAllExperiments);
+            statisticDTO.setExperiments(experiments + 1);
+            statisticDTO.preysKilled = averages;
+            statisticDTO.setSimulations(simulations - k);
+        }
+
+
+
+
+
+
+
+
+
+        if(statistics.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(statisticDTO,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/points/{id}",method = RequestMethod.GET)
+    public ResponseEntity<StatisticDTO> index2(@PathVariable Long id){
+
+        StatisticDTO statisticDTO = new StatisticDTO();
+        List<Statistic> statistics = statisticRepository.findByExecutionId(id);
+
+        AlgorithmExecution algorithmExecution = algorithmExecutionRepository.findById(id);
+
+        ProblemConfiguration problemConfiguration = problemConfigurationRepository.findById(algorithmExecution.getProblemConfigurationId());
+        MethodConfiguration methodConfiguration = methodConfigurationRepository.findById(algorithmExecution.getMethodConfigurationId());
+
+        statisticDTO.name = "Konfiguracja problemu: " +problemConfiguration.getName() + " Konfiguracja metody: "+methodConfiguration.getName();
+        List<ProblemParamValue> problemParamValues = problemConfiguration.problemParamValues;
+        int experiments = 0;
+        int simulations = 0;
+
+        double deathPoints = 0;
+        double killPoints = 0;
+        double movePoints = 0;
+        int steps = 0;
+        for (MethodParamValue methodParamValue : methodConfiguration.methodParamValues) {
+            if(Objects.equals(methodParamValue.method_param.getName(), "deathPoints")) {
+                deathPoints = Double.parseDouble(methodParamValue.getValue());
+            } else if (Objects.equals(methodParamValue.method_param.getName(), "killPoints")) {
+                killPoints = Double.parseDouble(methodParamValue.getValue());
+            } else if (Objects.equals(methodParamValue.method_param.getName(), "movePoints")) {
+                movePoints = Double.parseDouble(methodParamValue.getValue());
+            }
+        }
+        for(ProblemParamValue problemParamValue : problemParamValues) {
+            statisticDTO.insertParam(problemParamValue.problem_param.getName(),problemParamValue.getValue());
+            if(Objects.equals(problemParamValue.problem_param.getName(),"experiments")) {
+                experiments = Integer.parseInt(problemParamValue.getValue());
+            }
+            else if(Objects.equals(problemParamValue.problem_param.getName(),"simulations")) {
+                simulations = Integer.parseInt(problemParamValue.getValue());
+            } else if(Objects.equals(problemParamValue.problem_param.getName(), "steps")) {
+                steps = Integer.parseInt(problemParamValue.getValue());
+            }
+        }
+        statisticDTO.earnedPoints = new ArrayList<>(experiments);
+        for(int i = 0; i < experiments; i++) {
+            statisticDTO.earnedPoints.add(new ArrayList<>(simulations));
+            for(int j = 0; j < simulations; j++) {
+                statisticDTO.earnedPoints.get(i).add(j,0.0);
+            }
+        }
+        List<List<Integer>> simulationSteps = new ArrayList<>(experiments);
+        for(int i = 0; i < experiments; i++) {
+            List<Integer> stepsList = new ArrayList<Integer>(simulations);
+            for(int j = 0; j < simulations; j ++) {
+                stepsList.add(steps);
+            }
+            simulationSteps.add(stepsList);
+        }
+        List<List<Boolean>> died  = new ArrayList<>(experiments);
+        for (int i = 0; i < experiments; i++) {
+            List<Boolean> died2 = new ArrayList<>(simulations);
+            for(int j = 0; j < simulations; j++) {
+                died2.add(false);
+            }
+            died.add(died2);
+        }
+
+        for(Statistic statistic : statistics) {
+            if(Objects.equals(statistic.getEaten_agent_type(),"PREY")) {
+                statisticDTO.earnedPoints.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,statisticDTO.earnedPoints.get(statistic.getExperiment_number()-1).get(statistic.getSimulation_number()-1)+1);
+            }
+            if(Objects.equals(statistic.getEaten_agent_type(),"HUNTER")) {
+                //statisticDTO.earnedPoints.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,statisticDTO.earnedPoints.get(statistic.getExperiment_number()-1).get(statistic.getSimulation_number()-1)+deathPoints);
+                simulationSteps.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,statistic.getStep_number());
+                died.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,true);
+
+            }
+            if(Objects.equals(statistic.getEaten_agent_type(), "all")) {
+                simulationSteps.get(statistic.getExperiment_number()-1).set(statistic.getSimulation_number()-1,statistic.getStep_number());
+            }
+        }
+
+        for( int i = 0; i <experiments ; i ++) {
+
+            for (int j = 0; j < simulations ; j++) {
+                double points = 0;
+                double notMoves = statisticDTO.earnedPoints.get(i).get(j);
+                points = notMoves * killPoints;
+                if (died.get(i).get(j)) {
+                    notMoves +=1;
+                    points += deathPoints;
+                    points -= movePoints;
+                }
+
+                points += movePoints * (simulationSteps.get(i).get(j) - notMoves);
+                statisticDTO.earnedPoints.get(i).set(j,points);
+            }
+        }
+
+        statisticDTO.setExperiments(experiments);
+        statisticDTO.setSimulations(simulations);
+
+        if(simulations > k) {
+            List<List<Double>> averages = new ArrayList<>(experiments+1);
+            List<Double> averageOfAllExperiments = new ArrayList<>(simulations-k);
+            for(int s=0; s < simulations-k; s++) {
+                averageOfAllExperiments.add(0.0);
+            }
+            for(int l = 0; l< experiments; l++) {
+                List<Double> averagesInSimulation = new ArrayList<>(simulations - k);
+                for(int i = k; i < simulations; i++) {
+                    double sum = 0;
+                    for (int j = i - k; j < i; j++) {
+                        sum += statisticDTO.earnedPoints.get(l).get(j);
+                    }
+                    averagesInSimulation.add(sum/this.k);
+                    averageOfAllExperiments.set(i-k,averageOfAllExperiments.get(i-k)+sum/this.k);
+                }
+                averages.add(averagesInSimulation);
+
+            }
+            final int exps = experiments;
+            averageOfAllExperiments.replaceAll(b -> b/exps);
+            averages.add(averageOfAllExperiments);
+            statisticDTO.earnedPoints = averages;
+            statisticDTO.setSimulations(simulations - k);
+            statisticDTO.setExperiments(experiments + 1);
+        }
+
+
+
+        if(statistics.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(statisticDTO,HttpStatus.OK);
+    }
+
+}

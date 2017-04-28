@@ -1,0 +1,11 @@
+com.example
+com.example.algorithmExecuting
+com.example.configs
+com.example.controllers
+com.example.entities
+com.example.hunterPreyPredator
+com.example.hunterPreyPredator.agents
+com.example.hunterPreyPredator.exceptions
+com.example.hunterPreyPredator.map
+com.example.restControllers
+com.example.services

@@ -1,0 +1,124 @@
+<div>
+<div class="form-group">
+    <h3><a href="#/method"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Edytuj metodę
+
+    </h3>
+
+
+<form class="form-horizontal" ng-submit="edit(method.id,method)">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="method.name" /><br>
+    <label>Opis</label>
+    <textarea class="form-control" ng-model="method.description" rows="5"></textarea><br>
+
+
+
+
+
+    <label>Importy</label>
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.imports" ></textarea>
+    <br>
+
+    <label>Pola klasy łowcy: </label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.globals" ></textarea>
+    <br>
+
+    <label>Kod konstruktora: </label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.constructorcode" ></textarea>
+    <br>
+
+    <label>Kod wykonania metody "Position nextStep(Map &lt;String, Object&gt; mapInfo)"</label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.code" ></textarea>
+    <br>
+
+    <label>Kod wykonania metody "void finishGame(Map &lt;String, Object&gt; mapInfo)"</label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.finishgame" ></textarea>
+    <br>
+
+
+    <button type="submit" class="btn btn-primary">Edytuj</button>
+
+
+</form>
+
+<h3>Parametry</h3>
+
+<form class="form-group" ng-submit="addParam()">
+
+
+
+
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+            <thead>
+            <tr>
+
+                <td>Nazwa</td>
+                <td>Typ</td>
+                <td>Usuń
+
+                </td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="method_param in method_params">
+
+                <td>{{method_param.name}}</td>
+                <td>{{method_param.type}}</td>
+                <td><button type="button" ng-click="deleteParam(method_param.id,method_param)"><i class="glyphicon glyphicon-remove"></i></button></td>
+
+            </tr>
+            <tr>
+                <td><input type="form-group" ng-model="newmethodparam.name"/></td>
+                <td><select type="form-group" ng-model="newmethodparam.type">
+                    <option>INT</option>
+                    <option>BOOLEAN</option>
+                    <option>DOUBLE</option>
+                    <option>STRING</option>
+                </select></td>
+                <td><button type="submit">Dodaj</button></td>
+
+
+
+            </tr>
+            </tbody>
+        </table>
+</form>
+    </div>
+</div>

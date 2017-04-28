@@ -1,0 +1,17 @@
+<div class="form-group">
+    <h3><a href="#/problem"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Dodaj nowe zadanie
+
+    </h3>
+
+
+<form class="form-horizontal" ng-submit="add()">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="problem.name"/><br>
+    <label>Opis</label>
+    <textarea class="form-control" ng-model="problem.description" rows="5"></textarea><br>
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+
+</form>
+
+</div>

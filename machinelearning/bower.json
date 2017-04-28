@@ -1,0 +1,23 @@
+{
+  "name": "machinelearning",
+  "authors": [
+    "Mateusz Chadaj <mateusz.chadaj@gmail.com>"
+  ],
+  "description": "",
+  "directory": "src/main/webapp/resources/",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-chart.js": "^0.10.2",
+    "grunt": "^1.0.1"
+  }
+}

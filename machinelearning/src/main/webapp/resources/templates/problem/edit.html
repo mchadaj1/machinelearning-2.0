@@ -1,0 +1,60 @@
+<div>
+<div class="form-group">
+    <h3><a href="#/problem"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Edytuj zadanie
+
+    </h3>
+
+
+<form class="form-horizontal" ng-submit="edit(problem.id,problem)">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="problem.name" /><br>
+    <label>Opis</label>
+    <textarea class="form-control" ng-model="problem.description" rows="5"></textarea><br>
+    <button type="submit" class="btn btn-primary">Edytuj</button>
+
+</form>
+
+<h3>Parametry</h3>
+
+<form class="form-group" ng-submit="addParam()">
+
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+            <thead>
+            <tr>
+
+                <td>Nazwa</td>
+                <td>Typ</td>
+                <td>Usuń
+
+                </td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="problem_param in problem_params">
+
+                <td>{{problem_param.name}}</td>
+                <td>{{problem_param.type}}</td>
+                <td><button type="button" ng-click="deleteParam(problem_param.id,problem_param)"><i class="glyphicon glyphicon-remove"></i></button></td>
+
+            </tr>
+            <tr>
+                <td><input type="form-group" ng-model="newproblemparam.name"/></td>
+                <td><select type="form-group" ng-model="newproblemparam.type">
+                    <option>INT</option>
+                    <option>BOOLEAN</option>
+                    <option>DOUBLE</option>
+                    <option>STRING</option>
+                </select></td>
+                <td><button type="submit">Dodaj</button></td>
+
+
+
+            </tr>
+            </tbody>
+        </table>
+</form>
+    </div>
+</div>

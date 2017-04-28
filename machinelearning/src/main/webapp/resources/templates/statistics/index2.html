@@ -1,0 +1,9 @@
+<h2>Statystyki podane w punktach</h2>  <button ng-click="go('statistics/'+id)" class="btn btn-primary">Statystyki zabijania ofiar</button>
+
+<div ng-repeat="experiment in experiments">
+<h3>{{experiment.serie[0]}}</h3>
+<canvas id="line" class="chart chart-line" chart-data="experiment.data"
+        chart-labels="experiment.labels" chart-legend="true" chart-series="experiment.serie">
+</canvas>
+    <br>
+</div>

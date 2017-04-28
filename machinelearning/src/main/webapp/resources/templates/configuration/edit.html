@@ -1,0 +1,46 @@
+<div>
+<div class="form-group">
+    <h3><a href="#/configuration"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Edytuj konfigurację wariantu
+
+    </h3>
+
+
+<form class="form-horizontal" ng-submit="edit(configuration.id,configuration)">
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="configuration.name" /><br>
+
+    <button type="submit" class="btn btn-primary">Edytuj</button>
+
+</form>
+
+<h3>Parametry</h3>
+
+<form class="form-group" ng-submit="editValue(problem_param)">
+
+        <table class="table table-striped table-bordered" cellspacing="0" width="100%">
+
+            <thead>
+            <tr>
+
+                <td>Nazwa</td>
+                <td>Typ</td>
+
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="problem_param in problem_params">
+
+                <td>{{problem_param.name}}</td>
+                <td>{{problem_param.type}}</td>
+                <td><input type="form-group" ng-model = "problem_param.value" ng-change="editValue(problem_param);"/></td>
+
+
+            </tr>
+
+            </tbody>
+        </table>
+</form>
+    </div>
+</div>

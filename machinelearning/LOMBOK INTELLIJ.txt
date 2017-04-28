@@ -1,0 +1,3 @@
+W celu poprawnego działania modułu Lombok w Intellij Idea, należy:
+	- Zainstalować plugin Lombok.
+	- Zaznaczyć: Settings -> Compiler -> Annotation Processors -> Enable annotation processing: checked

@@ -1,0 +1,80 @@
+<div class="form-group">
+    <h3><a href="#/method"><i class="glyphicon glyphicon-chevron-left"></i></a>
+    Dodaj nową metodę
+
+    </h3>
+
+
+    <label>Zadanie</label>
+    <select class="form-control" ng-init="method.problem_id=method.problem"  ng-model="method.problem_id" ng-options="problem.id as problem.name for problem in problems">
+
+    </select>
+
+<form class="form-horizontal" ng-submit="add()">
+
+    <label>Nazwa</label>
+    <input class="form-control" ng-model="method.name"/><br>
+    <label>Opis</label>
+    <textarea class="form-control" ng-model="method.description" rows="5"></textarea><br>
+
+    <label>Importy</label>
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.imports" ></textarea>
+    <br>
+
+    <label>Pola klasy łowcy: </label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.globals" ></textarea>
+    <br>
+
+    <label>Kod konstruktora: </label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.constructorcode" ></textarea>
+    <br>
+
+    <label>Kod wykonania metody "Position nextStep(Map &lt;String, Object&gt; mapInfo)"</label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.code" ></textarea>
+    <br>
+
+    <label>Kod wykonania metody "void finishGame(Map &lt;String, Object&gt; mapInfo)"</label>
+
+    <textarea ui-codemirror="{
+    mode: 'javascript',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping : true,
+    matchBrackets: true
+    }" rows="10" class="form-control" ng-model="method.finishgame" ></textarea>
+    <br>
+
+
+
+    <button type="submit" class="btn btn-primary">Dodaj</button>
+
+</form>
+
+</div>
